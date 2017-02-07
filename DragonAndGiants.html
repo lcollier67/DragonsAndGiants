@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>DragonsAndGiants</title>
+    <script type="text/javascript">
+
+        //globals
+        var intervalId;
+        var intervalId1;
+        var canvas;
+        var ctx;
+        var background;
+        var score = 0;
+
+        var SPRITE_WIDTH = 80;
+        var BLAST_SPRITE_WIDTH = 30;
+        var CANVAS_HEIGHT = 500;
+        var CANVAS_WIDTH = 500;
+        var DRAG_HEIGHT = 40;
+        var DRAG_WIDTH = 40;
+        var GIANT_WIDTH = 40;
+        var GIANT_HEIGHT = 40;
+        var BLAST_HEIGHT = 15;
+        var BLAST_WIDTH = 15;
+        var PADDING = 5;
+        var interval = 100;
+        var interval2 = 3000;
+
+        var blueDrag = 0;
+        var greenDrag = 0;
+        var yellowDrag = 0;
+        var redDrag = 0;
+        var blueGiant = 0;
+        var greenGiant = 0;
+        var yellowGiant = 0;
+        var redGiant = 0;
+        var lightning = 0;
+        var acid = 0;
+        var fire = 0;
+        var ice = 0;
+        var blastVelocity = 5;
+
+        var rightDown;
+        var leftDown;
+        var upDown;
+        var downDown;
+
+        var gameover = false;
+        var ran = 0;
+
+        var mouseX;
+        var mouseY;
+
+        //sprite object
+        function sprite(charPath,spriteX,spriteY,canvasX, canvasY){
+            this.charImage = new Image();
+            this.charImage.ready = false;
+            this.charImage.onload = setAssetReady;
+            this.charImage.src = charPath;
+            this.spriteX =  spriteX;
+            this.spriteY =  spriteY;
+            this.canvasX =  canvasX;
+            this.canvasY =  canvasY;
+        }
+
+
+        function setAssetReady()
+        {
+            this.ready = true;
+        }
+
+        //make sprites
+        function initSprites(){
+            blueDrag = new sprite("Blue Dragon.png", 1, 1, canvas.width/2 + GIANT_WIDTH/2 + DRAG_WIDTH/2, (canvas.height/2) - DRAG_HEIGHT);
+            greenDrag = new sprite("Green Dragon.png", 1, 1, CANVAS_WIDTH /4 + DRAG_WIDTH + DRAG_WIDTH/2, (canvas.height/2)- DRAG_HEIGHT);
+            yellowDrag = new sprite("Yellow Dragon.png", 1, 1, canvas.width/2 - DRAG_WIDTH /2, canvas.height/2 );
+            redDrag = new sprite("Red Dragon.png", 1, 1, canvas.width/2 - DRAG_WIDTH/2, canvas.height/4  + GIANT_HEIGHT );
+
+            /*blueGiant = new sprite("Blue Giant.png", 1, 1, CANVAS_WIDTH /4 + DRAG_WIDTH + DRAG_WIDTH/2, (canvas.height/2)- DRAG_HEIGHT);
+            greenGiant = new sprite("Green Giant.png", 1, 1, canvas.width/2 + GIANT_WIDTH/2, (canvas.height/2) - DRAG_HEIGHT);
+            yellowGiant = new sprite("Yellow Giant.png", 1, 1, canvas.width/2 - DRAG_WIDTH /2, canvas.height/2 );
+            redGiant = new sprite("Red Giant.png", 1, 1, canvas.width/2 - DRAG_WIDTH/2, canvas.height/4  + GIANT_HEIGHT);*/
+
+        }
+
+        //make specific giant
+        function makeGiant(color){
+            if(color == "green"){
+                if(greenGiant == 0)
+                    greenGiant = new sprite("Green Giant.png", 1, 1, PADDING, (canvas.height/2)- DRAG_HEIGHT);
+            }else if (color == "yellow"){
+                if(yellowGiant == 0)
+                    yellowGiant = new sprite("Yellow Giant.png", 1, 1, canvas.width/2 - DRAG_WIDTH/2 , canvas.height - DRAG_HEIGHT - PADDING);
+            }else if(color == "red"){
+                if(redGiant == 0)
+                    redGiant = new sprite("Red Giant.png", 1, 1, canvas.width/2 - DRAG_WIDTH/2, PADDING);
+            }else if(color == "blue"){
+                if(blueGiant == 0){
+                    blueGiant = new sprite("Blue Giant.png", 1, 1, canvas.width - DRAG_WIDTH - PADDING, (canvas.height/2) - DRAG_HEIGHT);
+                }
+            }
+        }
+        /*//open a giant of a certain color's eye if closed or close if open
+        function eyeControl(color){
+            if(color == "green"){
+                if(greenGiant != 0){
+                    if(greenGiant.spriteX == 1){
+                        greenGiant.spriteX += 40;
+                    }else if(greenGiant.spriteX == 40){
+                        greenGiant.spriteX = 1;
+                    }
+                }
+
+            }else if (color == "yellow"){
+                if(yellowGiant != 0){
+                    if(yellowGiant.spriteX == 1){
+                        yellowGiant.spriteX += 40;
+                    }else if(yellowGiant.spriteX == 40){
+                        yellowGiant.spriteX = 1;
+                    }
+                }
+
+            }else if(color == "red"){
+                if(redGiant != 0){
+                    if(redGiant.spriteX == 1){
+                        redGiant.spriteX += 40;
+                    }else if(redGiant.spriteX == 40){
+                        redGiant.spriteX = 1;
+                    }
+                }
+
+            }else if(color == "blue"){
+                if(blueGiant != 0){
+                    if(blueGiant.spriteX == 1){
+                        blueGiant.spriteX = 40;
+                    }else if(blueGiant.spriteX == 40){
+                        blueGiant.spriteX = 1;
+                    }
+                }
+            }
+        }*/
+
+        //make specific blast
+        function makeBlast(color){
+            if(color == "green"){
+                if(acid == 0)
+                    acid = new sprite("Acid Blast.png", 1, 1, PADDING + GIANT_WIDTH, (canvas.height/2)- DRAG_HEIGHT);
+            }else if (color == "yellow"){
+                if(lightning == 0)
+                    lightning = new sprite("Lightning Blast.png", 1, 1, canvas.width/2 - DRAG_WIDTH/2 , canvas.height - DRAG_HEIGHT - PADDING);
+            }else if(color == "red"){
+                if(fire == 0)
+                    fire = new sprite("Fire Blast.png", 1, 1, canvas.width/2, PADDING);
+            }else if(color == "blue"){
+                if(ice == 0){
+                    ice = new sprite("Ice Blast.png", 1, 1, canvas.width - DRAG_WIDTH - PADDING, (canvas.height/2) - DRAG_HEIGHT);
+                }
+            }
+        }
+        function onKeyDown(evt)
+        {
+            if (evt.keyCode == 39) 			rightDown = true;
+            else if (evt.keyCode == 37) 	leftDown = true;
+            else if (evt.keyCode == 38) 	upDown = true;
+            else if (evt.keyCode == 40) 	downDown = true;
+        }
+
+        function onKeyUp(evt)
+        {
+            if (evt.keyCode == 39) 			rightDown = false;
+            else if (evt.keyCode == 37) 	leftDown = false;
+            else if (evt.keyCode == 38) 	upDown = false;
+            else if (evt.keyCode == 40) 	downDown = false;
+        }
+
+
+        function reinit(){
+            location.reload();
+        }
+        //initialize game
+        function init(){
+            canvas = document.getElementById("gameCanvas");
+            canvas.width = CANVAS_WIDTH;
+            canvas.height = CANVAS_HEIGHT;
+            window.addEventListener('keydown',onKeyDown,true);
+            window.addEventListener('keyup',onKeyUp,true);
+            ctx = canvas.getContext("2d");
+            background = new Image();
+            background.ready = false;
+            background.onload = setAssetReady();
+            background.src = "cobblestone.jpg";
+            initSprites();
+            intervalId = setInterval( draw, interval );
+            intervalId1 = setInterval( draw1, interval2 );
+            return intervalId;
+
+        }
+        function rect(x,y,w,h)
+        {
+            ctx.beginPath();
+            ctx.rect(x,y,w,h);
+            ctx.closePath();
+            ctx.fill();
+        }
+        function clear()
+        {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            rect(0,0,canvas.width,canvas.height);  // need this to color background
+            //ctx.drawImage(background,0,0);
+        }
+
+        function drawDrag(sprite){
+            ctx.drawImage(sprite.charImage,
+                sprite.spriteX, sprite.spriteY,            // sprite upper left positino
+                DRAG_WIDTH,DRAG_HEIGHT, // size of a sprite 72 x 96
+                sprite.canvasX,sprite.canvasY,  // canvas position
+                1*DRAG_WIDTH,1*DRAG_HEIGHT      // sprite size shrinkage
+            );
+            if (sprite.spriteX >= DRAG_WIDTH)
+                sprite.spriteX = 0;
+        }
+
+        function drawGiant(sprite){
+            ctx.drawImage(sprite.charImage,
+                sprite.spriteX, sprite.spriteY,            // sprite upper left positino
+                DRAG_WIDTH,DRAG_HEIGHT, // size of a sprite 72 x 96
+                sprite.canvasX,sprite.canvasY,  // canvas position
+                1*DRAG_WIDTH,1*DRAG_HEIGHT      // sprite size shrinkage
+            );
+        }
+
+        function drawBlast(sprite){
+            ctx.drawImage(sprite.charImage,
+                sprite.spriteX, sprite.spriteY,            // sprite upper left positino
+                BLAST_WIDTH,BLAST_HEIGHT, // size of a sprite 72 x 96
+                sprite.canvasX,sprite.canvasY,  // canvas position
+                1*BLAST_WIDTH,1*BLAST_HEIGHT      // sprite size shrinkage
+            );
+            if (sprite.spriteX >= BLAST_SPRITE_WIDTH/2)
+                sprite.spriteX = 0;
+        }
+
+        function blastCollision(blastSprite, dragSprite){
+            if(blastSprite.canvasX < dragSprite.canvasX + DRAG_WIDTH &&
+                blastSprite.canvasX  + BLAST_WIDTH > dragSprite.canvasX &&
+                blastSprite.canvasY < dragSprite.canvasY + DRAG_HEIGHT &&
+                blastSprite.canvasY + BLAST_HEIGHT > dragSprite.canvasY){
+                    gameover = true;
+            }
+        }
+
+        function clickCollision(mouseX,mouseY, blastSprite){
+            if(blastSprite.canvasX  + BLAST_WIDTH > mouseX &&
+                blastSprite.canvasX  < mouseX&&
+                blastSprite.canvasY  < mouseY&&
+                blastSprite.canvasY + BLAST_HEIGHT > mouseY){
+                return true;
+            }
+        }
+
+
+        function spriteDraw(){
+            if(fire != 0) {
+                fire.spriteX = 15;
+
+            }
+            if(ice != 0) {
+                ice.spriteX = 15;
+            }
+            if(acid!= 0) {
+                acid.spriteX = 15;
+            }
+            if(lightning != 0) {
+                lightning.spriteX = 15;
+            }
+            drawDrag(blueDrag);
+            drawDrag(redDrag);
+            drawDrag(yellowDrag);
+            drawDrag(greenDrag);
+            if(blueGiant != 0)
+            drawGiant(blueGiant);
+            if(redGiant != 0)
+            drawGiant(redGiant);
+            if(yellowGiant != 0)
+            drawGiant(yellowGiant);
+            if(greenGiant != 0)
+            drawGiant(greenGiant);
+            if(fire != 0)
+                drawBlast(fire);
+            if(ice != 0)
+                drawBlast(ice);
+            if(acid!= 0)
+                drawBlast(acid);
+            if(lightning != 0)
+                drawBlast(lightning);
+
+        }
+
+        function draw(){
+            ctx.fillStyle = "black"
+            clear();
+            if(fire != 0)
+                fire.canvasY += blastVelocity;
+            if(ice != 0)
+                ice.canvasX -= blastVelocity;
+            if(acid!= 0)
+                acid.canvasX += blastVelocity;
+            if(lightning != 0)
+                lightning.canvasY -= blastVelocity;
+            spriteDraw();
+            if (rightDown){
+                blueDrag.spriteX += 40;
+                if(blueGiant !=0)
+                    score += 100;
+                blueGiant = 0;
+            }
+            else if (leftDown) {
+                greenDrag.spriteX += 40;
+                if(greenGiant !=0)
+                    score += 100;
+                greenGiant = 0;
+            }
+            else if (upDown) {
+                redDrag.spriteX += 40;
+                if(redGiant !=0)
+                    score += 100;
+                redGiant = 0;
+            }
+            else if (downDown) {
+                yellowDrag.spriteX += 40;
+                if(yellowGiant !=0)
+                    score += 100;
+                yellowGiant = 0;
+            }
+            window.addEventListener("click", function (evt) {
+                var rect = canvas.getBoundingClientRect();
+                var i = evt.clientX - rect.left;
+                var j = evt.clientY - rect.top;
+
+                if(clickCollision(i,j, acid)){
+                    acid = 0;
+                }
+                if(clickCollision(i,j, lightning)){
+                    lightning = 0;
+                }
+                if(clickCollision(i,j, ice)){
+                    ice = 0;
+                }
+                if(clickCollision(i,j, fire)){
+                    fire = 0;
+                }
+            }, false);
+            blastCollision(ice, blueDrag);
+            blastCollision(lightning, yellowDrag);
+            blastCollision(acid, greenDrag);
+            blastCollision(fire, redDrag);
+            ctx.font = "10px Arial";
+            ctx.fillStyle = "red";
+            ctx.fillText("Score: " + score,10,10);
+            if(gameover){
+                alert("GAMEOVER")
+                clearInterval(intervalId);
+            }
+
+
+        }
+
+        function draw1(){
+            /*eyeControl("blue");
+            eyeControl("yellow");
+            eyeControl("green");
+            eyeControl("red");*/
+            if(gameover){
+                clearInterval(intervalId1);
+            }
+            if(greenGiant != 0){
+                if(greenGiant.spriteX == 1){
+                    greenGiant.spriteX = 40;
+                    //makeBlast("green");
+                }else if(greenGiant.spriteX == 40){
+                    greenGiant.spriteX = 1;
+                }
+            }
+
+            if(yellowGiant != 0){
+                if(yellowGiant.spriteX == 1){
+                    yellowGiant.spriteX = 40;
+                    //makeBlast("yellow");
+                }else if(yellowGiant.spriteX == 40){
+                    yellowGiant.spriteX = 1;
+                }
+            }
+
+
+            if(redGiant != 0){
+                if(redGiant.spriteX == 1){
+                    redGiant.spriteX = 40;
+                    //makeBlast("red");
+                }else if(redGiant.spriteX == 40){
+                    redGiant.spriteX = 1;
+                }
+            }
+
+
+            if(blueGiant != 0){
+                if(blueGiant.spriteX == 1){
+                    blueGiant.spriteX = 40;
+                    //makeBlast("blue");
+                }else if(blueGiant.spriteX == 40){
+                    blueGiant.spriteX = 1;
+                }
+            }
+
+            if(blueGiant.spriteX == 40){
+                makeBlast("blue");
+            }
+            if(redGiant.spriteX == 40){
+                makeBlast("red");
+            }
+            if(greenGiant.spriteX == 40){
+                makeBlast("green");
+            }
+            if(yellowGiant.spriteX == 40){
+                makeBlast("yellow");
+            }
+
+
+
+            ran = Math.floor(Math.random() * (4 - 0)) + 0;
+            if(ran == 0){
+                makeGiant("blue");
+            }
+            else if(ran == 1){
+                makeGiant("green");
+            }
+            else if( ran == 2){
+                makeGiant("yellow");
+            }
+            else if(ran == 3){
+                makeGiant("red");
+            }
+
+        }
+
+    </script>
+
+</head>
+<body onload="init()">
+<canvas id="gameCanvas">
+    Please upgrade your browser to support HTML5.<br/>
+    One recommendation is to install the latest Chrome or Firefox.
+</canvas>
+<button onclick="reinit()">Restart</button>
+</body>
+</html>

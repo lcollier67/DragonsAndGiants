@@ -8,6 +8,10 @@
         //globals
         var intervalId;
         var intervalId1;
+        var intervalId2;
+        var intervalId3;
+        var intervalId4;
+        var intervalId5;
         var canvas;
         var ctx;
         var background;
@@ -26,6 +30,10 @@
         var PADDING = 5;
         var interval = 100;
         var interval2 = 3000;
+        var interval3 = 2000;
+        var interval4 = 1000;
+        var interval5 = 1500;
+        var interval6 = 1000;
 
         var blueDrag = 0;
         var greenDrag = 0;
@@ -189,10 +197,14 @@
             background = new Image();
             background.ready = false;
             background.onload = setAssetReady();
-            background.src = "cobblestone.jpg";
+            background.src = "Dungeon Background.png";
             initSprites();
             intervalId = setInterval( draw, interval );
-            intervalId1 = setInterval( draw1, interval2 );
+            intervalId1 = setInterval( stage1, interval2 );
+            intervalId2 = setInterval( stage2, interval3 );
+            intervalId3 = setInterval( stage3, interval4 );
+            /*intervalId4 = setInterval( draw4, interval5 );
+            intervalId5 = setInterval( draw5, interval6 );*/
             return intervalId;
 
         }
@@ -207,7 +219,7 @@
         {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             rect(0,0,canvas.width,canvas.height);  // need this to color background
-            //ctx.drawImage(background,0,0);
+            ctx.drawImage(background,0,0);
         }
 
         function drawDrag(sprite){
@@ -237,8 +249,8 @@
                 sprite.canvasX,sprite.canvasY,  // canvas position
                 1*BLAST_WIDTH,1*BLAST_HEIGHT      // sprite size shrinkage
             );
-            if (sprite.spriteX >= BLAST_SPRITE_WIDTH/2)
-                sprite.spriteX = 0;
+            if (sprite.spriteX >= BLAST_WIDTH)
+                sprite.spriteX = -15;
         }
 
         function blastCollision(blastSprite, dragSprite){
@@ -261,23 +273,12 @@
 
 
         function spriteDraw(){
-            if(fire != 0) {
-                fire.spriteX = 15;
 
-            }
-            if(ice != 0) {
-                ice.spriteX = 15;
-            }
-            if(acid!= 0) {
-                acid.spriteX = 15;
-            }
-            if(lightning != 0) {
-                lightning.spriteX = 15;
-            }
             drawDrag(blueDrag);
             drawDrag(redDrag);
             drawDrag(yellowDrag);
             drawDrag(greenDrag);
+
             if(blueGiant != 0)
             drawGiant(blueGiant);
             if(redGiant != 0)
@@ -286,6 +287,7 @@
             drawGiant(yellowGiant);
             if(greenGiant != 0)
             drawGiant(greenGiant);
+
             if(fire != 0)
                 drawBlast(fire);
             if(ice != 0)
@@ -295,11 +297,25 @@
             if(lightning != 0)
                 drawBlast(lightning);
 
+            if(fire != 0) {
+                fire.spriteX += 15;
+            }
+            if(ice != 0) {
+                ice.spriteX += 15;
+            }
+            if(acid!= 0) {
+                acid.spriteX += 15;
+            }
+            if(lightning != 0) {
+                lightning.spriteX += 15;
+            }
+
         }
 
         function draw(){
             ctx.fillStyle = "black"
             clear();
+
             if(fire != 0)
                 fire.canvasY += blastVelocity;
             if(ice != 0)
@@ -308,7 +324,9 @@
                 acid.canvasX += blastVelocity;
             if(lightning != 0)
                 lightning.canvasY -= blastVelocity;
+
             spriteDraw();
+
             if (rightDown){
                 blueDrag.spriteX += 40;
                 if(blueGiant !=0)
@@ -356,7 +374,7 @@
             blastCollision(acid, greenDrag);
             blastCollision(fire, redDrag);
             ctx.font = "10px Arial";
-            ctx.fillStyle = "red";
+            ctx.fillStyle = "#7bb09b";
             ctx.fillText("Score: " + score,10,10);
             if(gameover){
                 alert("GAMEOVER")
@@ -366,81 +384,91 @@
 
         }
 
-        function draw1(){
-            /*eyeControl("blue");
-            eyeControl("yellow");
-            eyeControl("green");
-            eyeControl("red");*/
-            if(gameover){
+        function stageInner(){
+            if (gameover) {
                 clearInterval(intervalId1);
             }
-            if(greenGiant != 0){
-                if(greenGiant.spriteX == 1){
+            if (greenGiant != 0) {
+                if (greenGiant.spriteX == 1) {
                     greenGiant.spriteX = 40;
                     //makeBlast("green");
-                }else if(greenGiant.spriteX == 40){
+                } else if (greenGiant.spriteX == 40) {
                     greenGiant.spriteX = 1;
                 }
             }
 
-            if(yellowGiant != 0){
-                if(yellowGiant.spriteX == 1){
+            if (yellowGiant != 0) {
+                if (yellowGiant.spriteX == 1) {
                     yellowGiant.spriteX = 40;
                     //makeBlast("yellow");
-                }else if(yellowGiant.spriteX == 40){
+                } else if (yellowGiant.spriteX == 40) {
                     yellowGiant.spriteX = 1;
                 }
             }
 
 
-            if(redGiant != 0){
-                if(redGiant.spriteX == 1){
+            if (redGiant != 0) {
+                if (redGiant.spriteX == 1) {
                     redGiant.spriteX = 40;
                     //makeBlast("red");
-                }else if(redGiant.spriteX == 40){
+                } else if (redGiant.spriteX == 40) {
                     redGiant.spriteX = 1;
                 }
             }
 
 
-            if(blueGiant != 0){
-                if(blueGiant.spriteX == 1){
+            if (blueGiant != 0) {
+                if (blueGiant.spriteX == 1) {
                     blueGiant.spriteX = 40;
                     //makeBlast("blue");
-                }else if(blueGiant.spriteX == 40){
+                } else if (blueGiant.spriteX == 40) {
                     blueGiant.spriteX = 1;
                 }
             }
 
-            if(blueGiant.spriteX == 40){
+            if (blueGiant.spriteX == 40) {
                 makeBlast("blue");
             }
-            if(redGiant.spriteX == 40){
+            if (redGiant.spriteX == 40) {
                 makeBlast("red");
             }
-            if(greenGiant.spriteX == 40){
+            if (greenGiant.spriteX == 40) {
                 makeBlast("green");
             }
-            if(yellowGiant.spriteX == 40){
+            if (yellowGiant.spriteX == 40) {
                 makeBlast("yellow");
             }
 
 
-
             ran = Math.floor(Math.random() * (4 - 0)) + 0;
-            if(ran == 0){
+            if (ran == 0) {
                 makeGiant("blue");
             }
-            else if(ran == 1){
+            else if (ran == 1) {
                 makeGiant("green");
             }
-            else if( ran == 2){
+            else if (ran == 2) {
                 makeGiant("yellow");
             }
-            else if(ran == 3){
+            else if (ran == 3) {
                 makeGiant("red");
             }
+        }
+        }
 
+        function stage1(){
+            if(score <= 1000) {
+                stageInner();
+        }
+
+        function stage2(){
+            if(score >= 1000 && score < 2000) {
+                stageInner();
+        }
+
+        function stage3(){
+            if(score >= 2000) {
+                stageInner();
         }
 
     </script>

@@ -80,10 +80,10 @@
 
         //make sprites
         function initSprites(){
-            blueDrag = new sprite("Blue Dragon.png", 1, 1, canvas.width/2 + GIANT_WIDTH/2 + DRAG_WIDTH/2, (canvas.height/2) - DRAG_HEIGHT);
-            greenDrag = new sprite("Green Dragon.png", 1, 1, CANVAS_WIDTH /4 + DRAG_WIDTH + DRAG_WIDTH/2, (canvas.height/2)- DRAG_HEIGHT);
-            yellowDrag = new sprite("Yellow Dragon.png", 1, 1, canvas.width/2 - DRAG_WIDTH /2, canvas.height/2 );
-            redDrag = new sprite("Red Dragon.png", 1, 1, canvas.width/2 - DRAG_WIDTH/2, canvas.height/4  + GIANT_HEIGHT );
+            blueDrag = new sprite("Blue Dragon.png", 0, 0, canvas.width/2 + GIANT_WIDTH/2 + DRAG_WIDTH/2, (canvas.height/2) - DRAG_HEIGHT);
+            greenDrag = new sprite("Green Dragon.png", 0, 0, CANVAS_WIDTH /4 + DRAG_WIDTH + DRAG_WIDTH/2, (canvas.height/2)- DRAG_HEIGHT);
+            yellowDrag = new sprite("Yellow Dragon.png", 0, 0, canvas.width/2 - DRAG_WIDTH /2, canvas.height/2 );
+            redDrag = new sprite("Red Dragon.png", 0, 0, canvas.width/2 - DRAG_WIDTH/2, canvas.height/4  + GIANT_HEIGHT );
 
             /*blueGiant = new sprite("Blue Giant.png", 1, 1, CANVAS_WIDTH /4 + DRAG_WIDTH + DRAG_WIDTH/2, (canvas.height/2)- DRAG_HEIGHT);
             greenGiant = new sprite("Green Giant.png", 1, 1, canvas.width/2 + GIANT_WIDTH/2, (canvas.height/2) - DRAG_HEIGHT);
@@ -156,10 +156,10 @@
                     acid = new sprite("Acid Blast.png", 1, 1, PADDING + GIANT_WIDTH, (canvas.height/2)- DRAG_HEIGHT);
             }else if (color == "yellow"){
                 if(lightning == 0)
-                    lightning = new sprite("Lightning Blast.png", 1, 1, canvas.width/2 - DRAG_WIDTH/2 , canvas.height - DRAG_HEIGHT - PADDING);
+                    lightning = new sprite("Lightning Blast.png", 1, 1, canvas.width/2 - DRAG_WIDTH/2 + 10, canvas.height - DRAG_HEIGHT - PADDING);
             }else if(color == "red"){
                 if(fire == 0)
-                    fire = new sprite("Fire Blast.png", 1, 1, canvas.width/2, PADDING);
+                    fire = new sprite("Fire Blast.png", 1, 1, canvas.width/2- 10, PADDING);
             }else if(color == "blue"){
                 if(ice == 0){
                     ice = new sprite("Ice Blast.png", 1, 1, canvas.width - DRAG_WIDTH - PADDING, (canvas.height/2) - DRAG_HEIGHT);
@@ -255,8 +255,8 @@
 
         function blastCollision(blastSprite, dragSprite){
             if(blastSprite.canvasX < dragSprite.canvasX + DRAG_WIDTH &&
-                blastSprite.canvasX  + BLAST_WIDTH > dragSprite.canvasX &&
-                blastSprite.canvasY < dragSprite.canvasY + DRAG_HEIGHT &&
+                blastSprite.canvasX  + BLAST_WIDTH > dragSprite.canvasX + 15 &&
+                blastSprite.canvasY < dragSprite.canvasY + DRAG_HEIGHT  - 10&&
                 blastSprite.canvasY + BLAST_HEIGHT > dragSprite.canvasY){
                     gameover = true;
             }

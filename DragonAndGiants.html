@@ -332,9 +332,9 @@
                 if(blueGiant !=0) {
                     score += 100;
                 }
-                else{
+                /*else{
                     score-= 100
-                }
+                }*/
                 blueGiant = 0;
             }
             else if (leftDown) {
@@ -342,27 +342,27 @@
                 if(greenGiant !=0) {
                     score += 100;
                 }
-                else{
+               /* else{
                     score-= 100
-                }
+                }*/
                 greenGiant = 0;
             }
             else if (upDown) {
                 redDrag.spriteX += 40;
                 if(redGiant !=0) {
                     score += 100;
-                }else{
+                }/*else{
                     score-= 100
-                }
+                }*/
                 redGiant = 0;
             }
             else if (downDown) {
                 yellowDrag.spriteX += 40;
                 if(yellowGiant !=0) {
                     score += 100;
-                }else{
+                }/*else{
                     score-= 100
-                }
+                }*/
                 yellowGiant = 0;
             }
             window.addEventListener("click", function (evt) {

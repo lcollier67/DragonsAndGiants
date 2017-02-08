@@ -32,8 +32,8 @@
         var interval2 = 3000;
         var interval3 = 2000;
         var interval4 = 1000;
-        var interval5 = 1500;
-        var interval6 = 1000;
+        var interval5 =  750;
+        var interval6 =  500;
 
         var blueDrag = 0;
         var greenDrag = 0;
@@ -203,8 +203,8 @@
             intervalId1 = setInterval( stage1, interval2 );
             intervalId2 = setInterval( stage2, interval3 );
             intervalId3 = setInterval( stage3, interval4 );
-            /*intervalId4 = setInterval( draw4, interval5 );
-            intervalId5 = setInterval( draw5, interval6 );*/
+            intervalId4 = setInterval( stage4, interval5 );
+            intervalId5 = setInterval( stage5, interval6 );
             return intervalId;
 
         }
@@ -329,26 +329,40 @@
 
             if (rightDown){
                 blueDrag.spriteX += 40;
-                if(blueGiant !=0)
+                if(blueGiant !=0) {
                     score += 100;
+                }
+                else{
+                    score-= 100
+                }
                 blueGiant = 0;
             }
             else if (leftDown) {
                 greenDrag.spriteX += 40;
-                if(greenGiant !=0)
+                if(greenGiant !=0) {
                     score += 100;
+                }
+                else{
+                    score-= 100
+                }
                 greenGiant = 0;
             }
             else if (upDown) {
                 redDrag.spriteX += 40;
-                if(redGiant !=0)
+                if(redGiant !=0) {
                     score += 100;
+                }else{
+                    score-= 100
+                }
                 redGiant = 0;
             }
             else if (downDown) {
                 yellowDrag.spriteX += 40;
-                if(yellowGiant !=0)
+                if(yellowGiant !=0) {
                     score += 100;
+                }else{
+                    score-= 100
+                }
                 yellowGiant = 0;
             }
             window.addEventListener("click", function (evt) {
@@ -374,7 +388,7 @@
             blastCollision(acid, greenDrag);
             blastCollision(fire, redDrag);
             ctx.font = "10px Arial";
-            ctx.fillStyle = "#7bb09b";
+            ctx.fillStyle = "#98d8bf";
             ctx.fillText("Score: " + score,10,10);
             if(gameover){
                 alert("GAMEOVER")
@@ -457,19 +471,31 @@
         }
 
         function stage1(){
-            if(score <= 1000) {
+            if(score <= 500) {
                 stageInner();
             }
         }
 
         function stage2(){
-            if(score >= 1000 && score < 2000) {
+            if(score >= 500 && score < 1500) {
                 stageInner();
             }
         }
 
         function stage3(){
-            if(score >= 2000) {
+            if(score >= 1500 && score <=3000) {
+                stageInner();
+            }
+        }
+
+        function stage4(){
+            if(score >= 3000 && score <= 5000) {
+                stageInner();
+            }
+        }
+
+        function stage5(){
+            if(score >= 5000) {
                 stageInner();
             }
         }
